@@ -1,10 +1,12 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
 using Senparc.Weixin.MP.Entities;
+using Senparc.Weixin.MP.Entities.Request;
 
 namespace Senparc.Weixin.MP.Helpers
 {
@@ -86,6 +88,11 @@ namespace Senparc.Weixin.MP.Helpers
                             Music music = new Music();
                             FillEntityWithXml(music, new XDocument(root.Element(propName)));
                             prop.SetValue(entity, music, null);
+                            break;
+                        case "Video"://RequestMessageVideo适用
+                            Video video=new Video();
+                            FillEntityWithXml(video, new XDocument(root.Element(propName)));
+                            prop.SetValue(entity, video, null);
                             break;
                         default:
                             prop.SetValue(entity, root.Element(propName).Value, null);
@@ -210,6 +217,16 @@ namespace Senparc.Weixin.MP.Helpers
         public static T CreateResponseMessage<T>(this IRequestMessageBase requestMessage) where T : ResponseMessageBase
         {
             return ResponseMessageBase.CreateFromRequestMessage<T>(requestMessage);
+        }
+
+        /// <summary>
+        /// ResponseMessageBase.CreateFromResponseXml(xml)的扩展方法
+        /// </summary>
+        /// <param name="xml">返回给服务器的Response Xml</param>
+        /// <returns></returns>
+        public static IResponseMessageBase CreateResponseMessage(this string xml)
+        {
+            return ResponseMessageBase.CreateFromResponseXml(xml);
         }
     }
 }

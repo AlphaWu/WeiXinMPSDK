@@ -49,6 +49,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -65,8 +66,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AdvancedAPIs\Custom\CustomTest.cs" />
+    <Compile Include="AdvancedAPIs\Groups\CustomTest.cs" />
+    <Compile Include="AdvancedAPIs\User\CustomTest.cs" />
+    <Compile Include="Agents\MessageAgentTest.cs" />
     <Compile Include="CheckSignatureTest.cs" />
     <Compile Include="CommonAPIs\CommonApiTest.cs" />
+    <Compile Include="Context\MessageContainerTest.cs" />
+    <Compile Include="Context\WeixinContextTest.cs" />
     <Compile Include="Entities\Response\ResponseMessageBaseTest.cs" />
     <Compile Include="Helpers\GpsHelperTest.cs" />
     <Compile Include="HttpUtility\RequestUtilityTest.cs" />
@@ -89,9 +96,7 @@
       <Name>Senparc.Weixin.MP</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Context\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="CommonAPIs\CommonApiTest.Menu.cs" />
   </ItemGroup>

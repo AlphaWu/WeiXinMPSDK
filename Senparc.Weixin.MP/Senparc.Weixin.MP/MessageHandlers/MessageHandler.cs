@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Senparc.Weixin.MP.Context;
 using Senparc.Weixin.MP.Entities;
+using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.Helpers;
 
 namespace Senparc.Weixin.MP.MessageHandlers
@@ -23,6 +24,7 @@ namespace Senparc.Weixin.MP.MessageHandlers
         /// 默认为False。
         /// 如果在执行OnExecuting()执行前设为True，则所有OnExecuting()、Execute()、OnExecuted()代码都不会被执行。
         /// 如果在执行OnExecuting()执行过程中设为True，则后续Execute()及OnExecuted()代码不会被执行。
+        /// 建议在设为True的时候，给ResponseMessage赋值，以返回友好信息。
         /// </summary>
         bool CancelExcute { get; set; }
 
@@ -107,6 +109,7 @@ namespace Senparc.Weixin.MP.MessageHandlers
         /// 默认为False。
         /// 如果在执行OnExecuting()执行前设为True，则所有OnExecuting()、Execute()、OnExecuted()代码都不会被执行。
         /// 如果在执行OnExecuting()执行过程中设为True，则后续Execute()及OnExecuted()代码不会被执行。
+        /// 建议在设为True的时候，给ResponseMessage赋值，以返回友好信息。
         /// </summary>
         public bool CancelExcute { get; set; }
 
@@ -138,12 +141,14 @@ namespace Senparc.Weixin.MP.MessageHandlers
         public IRequestMessageBase RequestMessage { get; set; }
         /// <summary>
         /// 响应实体
-        /// 只有当执行Execute()方法后才可能有值
+        /// 正常情况下只有当执行Execute()方法后才可能有值。
+        /// 也可以结合Cancel，提前给ResponseMessage赋值。
         /// </summary>
         public IResponseMessageBase ResponseMessage { get; set; }
 
-        public MessageHandler(Stream inputStream)
+        public MessageHandler(Stream inputStream, int maxRecordCount = 0)
         {
+            WeixinContext.MaxRecordCount = maxRecordCount;
             using (XmlReader xr = XmlReader.Create(inputStream))
             {
                 RequestDocument = XDocument.Load(xr);
@@ -151,8 +156,9 @@ namespace Senparc.Weixin.MP.MessageHandlers
             }
         }
 
-        public MessageHandler(XDocument requestDocument)
+        public MessageHandler(XDocument requestDocument, int maxRecordCount = 0)
         {
+            WeixinContext.MaxRecordCount = maxRecordCount;
             Init(requestDocument);
         }
 
@@ -221,6 +227,9 @@ namespace Senparc.Weixin.MP.MessageHandlers
                     case RequestMsgType.Voice:
                         ResponseMessage = OnVoiceRequest(RequestMessage as RequestMessageVoice);
                         break;
+                    case RequestMsgType.Video:
+                        ResponseMessage = OnVideoRequest(RequestMessage as RequestMessageVideo);
+                        break;
                     case RequestMsgType.Event:
                         ResponseMessage = OnEventRequest(RequestMessage as RequestMessageEventBase);
                         break;
@@ -251,7 +260,6 @@ namespace Senparc.Weixin.MP.MessageHandlers
         public virtual void OnExecuted()
         {
         }
-
 
         /// <summary>
         /// 默认返回消息（当任何OnXX消息没有被重写，都将自动返回此默认消息）
@@ -298,6 +306,15 @@ namespace Senparc.Weixin.MP.MessageHandlers
 
 
         /// <summary>
+        /// 视频类型请求
+        /// </summary>
+        public virtual IResponseMessageBase OnVideoRequest(RequestMessageVideo requestMessage)
+        {
+            return DefaultResponseMessage(requestMessage);
+        }
+
+
+        /// <summary>
         /// 链接消息类型请求
         /// </summary>
         public virtual IResponseMessageBase OnLinkRequest(RequestMessageLink requestMessage)
@@ -326,8 +343,11 @@ namespace Senparc.Weixin.MP.MessageHandlers
                 case Event.unsubscribe://退订
                     responseMessage = OnEvent_UnsubscribeRequest(RequestMessage as RequestMessageEvent_Unsubscribe);
                     break;
-                case Event.CLICK:
+                case Event.CLICK://菜单点击
                     responseMessage = OnEvent_ClickRequest(RequestMessage as RequestMessageEvent_Click);
+                    break;
+                case Event.scan://二维码
+                    ResponseMessage = OnEvent_ScanRequest(RequestMessage as RequestMessageEvent_Scan);
                     break;
                 default:
                     throw new UnknownRequestMsgTypeException("未知的Event下属请求信息", null);
@@ -373,6 +393,14 @@ namespace Senparc.Weixin.MP.MessageHandlers
         /// Event事件类型请求之CLICK
         /// </summary>
         public virtual IResponseMessageBase OnEvent_ClickRequest(RequestMessageEvent_Click requestMessage)
+        {
+            return DefaultResponseMessage(requestMessage);
+        }
+
+        /// <summary>
+        /// Event事件类型请求之scan
+        /// </summary>
+        public virtual IResponseMessageBase OnEvent_ScanRequest(RequestMessageEvent_Scan requestMessage)
         {
             return DefaultResponseMessage(requestMessage);
         }

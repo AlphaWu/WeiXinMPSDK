@@ -9,6 +9,86 @@ Senparc.Weixin.MP.MvcExtension更新日志见：https://github.com/JeffreySu/Wei
 
 Senparc.Weixin.MP.dll升级记录
 ----------
+v4.5.0 /2013-11-25
+
+升级到v4.5.0 补充之前遗漏的视屏类型消息。
+
+v4.4.6 /2013-11-24
+
+完善HttpUitlity中Get和Post的方法。
+
+v4.4.2 /2013-11-23
+
+添加消息上下文删除事件，Demo见/Senparc.Weixin.MP.Sample/Senparc.Weixin.MP.Sample.CommonService/CustomMessageHandler/CustomMessageContext.cs
+
+v4.3.0 /2013-11-20
+
+为MessageAgent添加了使用SouideaKey的方法：MessageAgent.RequestSouideaXml()。用于更加方便和安全地对接www.souidea.com平台的微信营销工具。有关SouideaKey的说明请见：http://www.souidea.com/ApiDocuments/Item/25#51
+
+v4.2.2 /2013-11-18
+
+优化升级MessageContext和WeixinContext
+
+将最大记录数量设置添加到MessageHandler构造函数中
+
+添加VS2010的解决方案文件
+
+v4.2.0 /2013-11-18
+
+优化新接口
+
+优化菜单操作
+
+添加MessageAgent代理功能
+
+升级MessageContext，创建MessageContainer容器，添加记录条数限制（防止恶意发送消息导致内存大量消耗）
+
+v3.x /2013-10-31
+
+根据官方2013年10月29日更新，对SDK做相应升级。
+
+相关功能的更新下面（OK结尾的表示已完成）：
+
+语音识别            - v3.0 OK
+
+客服接口            - v3.0 OK
+
+OAuth2.0网页授权    - 目测用的人不多，等有人需要用的时候再开发
+
+生成带参数二维码    - v3.5 OK
+
+获取用户地理位置    - v3.1 OK
+
+获取用户基本信息    - v3.2 OK
+
+获取关注者列表      - v3.3 OK
+
+用户分组接口        - v3.4 OK
+
+上传下载多媒体文件  - 目测用的人不多，等有人需要用的时候再开发
+
+
+v2.4 /2013-8-9
+
+优化菜单操作的逻辑代码，添加WeixinMenuException异常类型
+
+v2.3 /2013-8-7
+
+完善菜单类型，添加在线菜单编辑器
+
+v2.2 /2013-8-5
+
+优化菜单事件处理，解决菜单编码问题
+
+v2.1 /2013-8-5
+
+升级自定义菜单类型
+
+v2.0 /2013-8-5
+
+完成微信5.0 自定义菜单升级
+
+
 v1.5 /2013-8-4
 
 这是一个重要更新。

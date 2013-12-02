@@ -1,7 +1,10 @@
 # git ignore file
+Nuget/
 bin/
 obj/
 *.[pdb]
+*.suo
+*.user
 Senparc.Weixin.MP.Sample/Senparc.Weixin.MP.Sample/Senparc.Weixin.MP.Sample.csproj.user
 Senparc.Weixin.MP.Sample/Senparc.Weixin.MP.Sample.v11.suo
 Senparc.Weixin.MP.Sample/Senparc.Weixin.MP.Sample/Senparc.Weixin.MP.Sample.csproj.user
@@ -51,3 +54,4 @@ Senparc.Weixin.MP/Senparc.Weixin.MP/Senparc.Weixin.MP.csproj.user
 Senparc.Weixin.MP.Sample.WebForms/Senparc.Weixin.MP.Sample.WebForms.v11.suo
 Senparc.Weixin.MP.BuildOutPut/Senparc.Weixin.MP.pdb
 Senparc.Weixin.MP.Sample/Senparc.Weixin.MP.Sample.sln.DotSettings.user
+Senparc.Weixin.MP.BuildOutPut/Senparc.Weixin.MP.MvcExtension.pdb

@@ -40,7 +40,8 @@ namespace Senparc.Weixin.MP.Sample.Controllers
             }
             else
             {
-                return Content("failed:" + signature + "," + MP.CheckSignature.GetSignature(timestamp, nonce, Token)+"。如果您在浏览器中看到这条信息，表明此Url可以填入微信后台。");
+                return Content("failed:" + signature + "," + MP.CheckSignature.GetSignature(timestamp, nonce, Token) + "。"+
+                    "如果你在浏览器中看到这句话，说明此地址可以被作为微信公众账号后台的Url，请注意保持Token一致。");
             }
         }
 
@@ -58,8 +59,11 @@ namespace Senparc.Weixin.MP.Sample.Controllers
                 return Content("参数错误！");
             }
 
+            //v4.2.2之后的版本，可以设置每个人上下文消息储存的最大数量，防止内存占用过多，如果该参数小于等于0，则不限制
+            var maxRecordCount = 10;
+
             //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
-            var messageHandler = new CustomMessageHandler(Request.InputStream);
+            var messageHandler = new CustomMessageHandler(Request.InputStream,maxRecordCount);
 
             try
             {
@@ -107,7 +111,7 @@ namespace Senparc.Weixin.MP.Sample.Controllers
                 return new WeixinResult("参数错误！");//v0.8+
             }
 
-            var messageHandler = new CustomMessageHandler(Request.InputStream);
+            var messageHandler = new CustomMessageHandler(Request.InputStream,10);
 
             messageHandler.Execute();//执行微信处理过程
 

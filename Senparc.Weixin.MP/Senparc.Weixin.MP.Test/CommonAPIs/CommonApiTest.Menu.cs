@@ -14,14 +14,14 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         [TestMethod]
         public void CreateMenuTest()
         {
-           // return;//已经通过测试
+            return;//已经通过测试
 
             LoadToken();
 
             ButtonGroup bg = new ButtonGroup();
 
             //单击
-            bg.button.Add(new SingleButton()
+            bg.button.Add(new SingleClickButton()
                               {
                                   name = "单击测试",
                                   key = "OneClick",
@@ -33,22 +33,35 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
                                 {
                                     name = "二级菜单"
                                 };
-            subButton.sub_button.Add(new SingleButton()
+            subButton.sub_button.Add(new SingleClickButton()
                                         {
                                             key = "SubClickRoot_Text",
                                             name = "返回文本"
                                         });
-            subButton.sub_button.Add(new SingleButton()
+            subButton.sub_button.Add(new SingleClickButton()
                                         {
                                             key = "SubClickRoot_News",
                                             name = "返回图文"
                                         });
-            subButton.sub_button.Add(new SingleButton()
+            subButton.sub_button.Add(new SingleClickButton()
                                         {
                                             key = "SubClickRoot_Music",
                                             name = "返回音乐"
                                         });
+            subButton.sub_button.Add(new SingleViewButton()
+                                        {
+                                            url = "http://weixin.senparc.com",
+                                            name = "Url跳转"
+                                        });
             bg.button.Add(subButton);
+
+            //url跳转
+            var viewButton = new SingleViewButton()
+                                {
+                                    name = "Url跳转",
+                                    url = "http://weixin.senparc.com"
+                                };
+            bg.button.Add(viewButton);
 
             var result = CommonApi.CreateMenu(tokenResult.access_token, bg);
 
@@ -60,7 +73,7 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         [TestMethod]
         public void GetMenuTest()
         {
-            //return;//已经通过测试
+            return;//已经通过测试
             LoadToken();
 
             var result = CommonApi.GetMenu(tokenResult.access_token);
@@ -73,7 +86,7 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         [TestMethod]
         public void DeleteMenuTest()
         {
-            return;//删除之后，GetMenu将返回null
+            return;//已经通过测试，删除之后，GetMenu将返回null
 
             LoadToken();
 

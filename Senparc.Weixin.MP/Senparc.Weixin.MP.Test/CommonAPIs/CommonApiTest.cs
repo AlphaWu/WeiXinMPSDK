@@ -5,18 +5,24 @@ using Senparc.Weixin.MP.Entities;
 
 namespace Senparc.Weixin.MP.Test.CommonAPIs
 {
-    [TestClass]
+    //已通过测试
+    //[TestClass]
     public partial class CommonApiTest
     {
-        private string AppId = "";//换成你的信息
+        private string AppId = "wxb65d5174ba1f015b";//换成你的信息
         private string AppSecret = "";//换成你的信息
-        protected AccessTokenResult tokenResult = null;
-
-
+        protected AccessTokenResult tokenResult = new AccessTokenResult()
+                                                      {
+                                                          /* 由于获取accessToken有次数限制，为了节约请求，
+                                                           * 可以到 http://weixin.senparc.com/Menu 获取Token之后填入下方，
+                                                           * 使用当前可用Token直接进行测试。
+                                                           */
+                                                          access_token = ""
+                                                      };
 
         protected AccessTokenResult LoadToken()
         {
-            if (tokenResult == null)
+            if (tokenResult == null || string.IsNullOrEmpty(tokenResult.access_token))
             {
                 //正确数据，请填写微信公众账号后台的AppId及AppSecret
                 tokenResult = CommonApi.GetToken(AppId, AppSecret);
@@ -27,7 +33,6 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         [TestMethod]
         public void GetTokenTest()
         {
-            return;//已通过测试
             LoadToken();
             Assert.IsNotNull(tokenResult);
             Assert.IsTrue(tokenResult.access_token.Length > 0);
@@ -36,7 +41,6 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
 
         public void GetTokenFailTest()
         {
-            return;//已经通过，但需要连接远程测试，太耗时，常规测试时暂时忽略。
             try
             {
                 var result = CommonApi.GetToken("appid", "secret");
@@ -52,8 +56,6 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         [TestMethod]
         public void GetUserInfoTest()
         {
-            return;//已经通过，但需要连接远程测试，太耗时，常规测试时暂时忽略。
-
             try
             {
                 GetTokenTest();
@@ -69,7 +71,6 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         [TestMethod]
         public void UploadMediaFileTest()
         {
-            return;//已经通过，但需要连接远程测试，太耗时，常规测试时暂时忽略。
             try
             {
                 var file = "..\\..\\..\\..\\Senparc.Weixin.MP.Sample\\Senparc.Weixin.MP.Sample\\Images\\qrcode.jpg";

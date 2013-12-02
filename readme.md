@@ -2,15 +2,16 @@
 =================
 
 
-已经支持所有微信4.5 API，支持语音接收及返回音乐格式。微信5.0目前所发布的接口也都已经集成（自定义菜单），我会持续关注API变化。
+已经支持所有微信5.0 API，包括自定义菜单。
 
-已经支持关注（订阅）事件推送（尚未发布的消息推送功能可以通过项目中的单元测试进行开发，如自定义菜单）。
+（同时由于易信的API目前与微信保持一致，此SDK也可以直接用于易信，如需使用易信的自定义菜单，通用接口改成易信的通讯地址即可）
+
 
 已经支持用户会话上下文（解决服务器无法使用Session处理用户信息的问题）。
 
 目前官方的API都已完美集成，除非有特殊说明，所有升级都会尽量确保向下兼容，所以已经发布的版本请放心使用或直接升级（覆盖）最新的[Senparc.Weixin.MP.dll](https://github.com/JeffreySu/WeiXinMPSDK/tree/master/Senparc.Weixin.MP.BuildOutPut)。
 
-微信公众平台SDK：Senparc.Weixin.MP beta
+如果需要使用或修改此项目的源代码，建议先Fork。也欢迎将您修改的通用版本Pull Request过来。
 
 资源
 ----------------
@@ -20,7 +21,9 @@
 
 Q&A：https://github.com/JeffreySu/WeiXinMPSDK/wiki/QA
 
-SDK技术交流QQ群：300313885
+自定义菜单在线编辑工具：http://weixin.senparc.com/Menu
+
+SDK技术交流QQ群：1群：300313885（已升级到1000人群，暂时可以继续加）  2群：293958349
 
 业务联系QQ：498977166
 
@@ -179,33 +182,20 @@ namespace Senparc.Weixin.MP.Sample.CustomerMessageHandler
 
 从v0.4.0开始，MessageHandler增加了对用户会话上下文的支持，用于解决服务器上无法使用Session管理用户会话的缺陷。详见：[用户上下文WeixinContext和MessageContext](https://github.com/JeffreySu/WeiXinMPSDK/wiki/%E7%94%A8%E6%88%B7%E4%B8%8A%E4%B8%8B%E6%96%87WeixinContext%E5%92%8CMessageContext)
 
+使用Nuget安装到项目中
+--------------
+地址：https://www.nuget.org/packages/Senparc.Weixin.MP
+
+命令：
+```
+PM> Install-Package Senparc.Weixin.MP
+```
+
 捐助
 --------------
 如果这个项目对您有用，我们欢迎各方任何形式的捐助，也包括参与到项目代码更新或意见反馈中来。谢谢！
 
 资金捐助：https://me.alipay.com/jeffreysu
-
-感谢捐赠者：
-
-[alphawu](https://github.com/alphawu) 吴鹏
-
-樊伟华
-
-caozhanqiang
-
-uniclo
-
-李上表
-
-曹战强
-
-何世亮
-
-YGF
-
-陈明
-
-吴昌克
 
 
 License

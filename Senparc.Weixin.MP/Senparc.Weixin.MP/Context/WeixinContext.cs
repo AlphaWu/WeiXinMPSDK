@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Senparc.Weixin.MP.Entities;
 
@@ -14,6 +15,7 @@ namespace Senparc.Weixin.MP.Context
         /// 是否开启上下文记录
         /// </summary>
         public static bool UseWeixinContext = true;
+
     }
 
     /// <summary>
@@ -22,6 +24,8 @@ namespace Senparc.Weixin.MP.Context
     /// </summary>
     public class WeixinContext<TM> where TM : class, IMessageContext, new()
     {
+        private int _maxRecordCount;
+
         /// <summary>
         /// 所有MessageContext集合，不要直接操作此对象
         /// </summary>
@@ -35,6 +39,12 @@ namespace Senparc.Weixin.MP.Context
         /// 每一个MessageContext过期时间
         /// </summary>
         public Double ExpireMinutes { get; set; }
+
+        /// <summary>
+        /// 最大储存上下文数量（分别针对请求和响应信息）
+        /// </summary>
+        public int MaxRecordCount { get; set; }
+
 
         public WeixinContext()
         {
@@ -50,6 +60,8 @@ namespace Senparc.Weixin.MP.Context
             MessageQueue = new List<TM>();
             ExpireMinutes = 90;
         }
+
+     
 
         /// <summary>
         /// 获取MessageContext，如果不存在，返回null
@@ -68,6 +80,9 @@ namespace Senparc.Weixin.MP.Context
                 {
                     MessageQueue.RemoveAt(0);//从队列中移除过期对象
                     MessageCollection.Remove(firstMessageContext.UserName);//从集合中删除过期对象
+
+                    //添加事件回调
+                    firstMessageContext.OnRemoved();//TODO:此处异步处理，或用户在自己操作的时候异步处理需要耗费时间比较长的操作。
                 }
                 else
                 {
@@ -104,7 +119,12 @@ namespace Senparc.Weixin.MP.Context
                 if (createIfNotExists)
                 {
                     //全局只在这一个地方使用MessageCollection[Key]写入
-                    MessageCollection[userName] = new TM() { UserName = userName };
+                    MessageCollection[userName] = new TM()
+                    {
+                        UserName = userName,
+                        MaxRecordCount = MaxRecordCount
+                    };
+
                     messageContext = GetMessageContext(userName);
                     //插入列队
                     MessageQueue.Add(messageContext); //最新的排到末尾

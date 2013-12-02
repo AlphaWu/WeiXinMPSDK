@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Web;
+using Senparc.Weixin.MP.Agent;
 using Senparc.Weixin.MP.Context;
 using Senparc.Weixin.MP.Entities;
+using Senparc.Weixin.MP.Helpers;
 using Senparc.Weixin.MP.MessageHandlers;
 
 namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
@@ -10,7 +13,7 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
     /// <summary>
     /// 自定义MessageHandler
     /// </summary>
-    public partial class CustomMessageHandler : MessageHandler<MessageContext>
+    public partial class CustomMessageHandler 
     {
         public override IResponseMessageBase OnEvent_ClickRequest(RequestMessageEvent_Click requestMessage)
         {
@@ -50,6 +53,26 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
                         var strongResponseMessage = CreateResponseMessage<ResponseMessageMusic>();
                         reponseMessage = strongResponseMessage;
                         strongResponseMessage.Music.MusicUrl = "http://weixin.senparc.com/Content/music1.mp3";
+                    }
+                    break;
+                case "SubClickRoot_Agent"://代理消息
+                    {
+                        //获取返回的XML
+                        DateTime dt1 = DateTime.Now;
+                        reponseMessage = MessageAgent.RequestResponseMessage(agentUrl, agentToken, RequestDocument.ToString());
+                        DateTime dt2 = DateTime.Now;
+
+                        if (reponseMessage is ResponseMessageNews)
+                        {
+                            (reponseMessage as ResponseMessageNews)
+                                .Articles[0]
+                                .Description += string.Format("\r\n\r\n代理过程总耗时：{0}毫秒", (dt2 - dt1).Milliseconds);
+                        }
+                    }
+                    break;
+                case "Member"://托管代理会员信息
+                    {
+                        reponseMessage = MessageAgent.RequestResponseMessage(agentUrl, agentToken, RequestDocument.ToString());
                     }
                     break;
             }

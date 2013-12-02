@@ -14,6 +14,7 @@ namespace Senparc.Weixin.MP
         Location, //地理位置
         Image, //图片
         Voice, //语音
+        Video, //视频
         Link, //连接信息
         Event, //事件推送
     }
@@ -46,7 +47,12 @@ namespace Senparc.Weixin.MP
         /// <summary>
         /// 自定义菜单点击事件
         /// </summary>
-        CLICK
+        CLICK,
+
+        /// <summary>
+        /// 二维码扫描
+        /// </summary>
+        scan
     }
 
 
@@ -65,11 +71,14 @@ namespace Senparc.Weixin.MP
     /// </summary>
     public enum ButtonType
     {
+        /// <summary>
+        /// 点击
+        /// </summary>
         click,
         /// <summary>
-        /// 暂时已被禁用
+        /// Url
         /// </summary>
-        //view
+        view
     }
 
     /// <summary>
@@ -80,7 +89,7 @@ namespace Senparc.Weixin.MP
         /// <summary>
         /// 图片
         /// </summary>
-        image, 
+        image,
         /// <summary>
         /// 语音
         /// </summary>
@@ -160,6 +169,8 @@ namespace Senparc.Weixin.MP
         不存在媒体数据 = 46001,
         不存在的菜单版本 = 46002,
         不存在的菜单数据 = 46003,
-        解析JSON_XML内容错误 = 47001
+        解析JSON_XML内容错误 = 47001,
+        api功能未授权 = 48001,
+        用户未授权该api = 50001
     }
 }
