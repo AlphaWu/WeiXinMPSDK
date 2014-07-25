@@ -32,12 +32,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Test\</OutputPath>
+    <OutputPath>..\..\Senparc.Weixin.MP.BuildOutPut\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>..\..\Senparc.Weixin.MP.BuildOutPut\Senparc.Weixin.MP.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -51,24 +52,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedAPIs\CustomService\CustomService.cs" />
+    <Compile Include="AdvancedAPIs\CustomService\RecordJson.cs" />
+    <Compile Include="AdvancedAPIs\CustomService\GetRecordResult.cs" />
     <Compile Include="AdvancedAPIs\Custom\Custom.cs" />
+    <Compile Include="AdvancedAPIs\GroupMessage\GroupMessage.cs" />
+    <Compile Include="AdvancedAPIs\GroupMessage\NewsModel.cs" />
+    <Compile Include="AdvancedAPIs\GroupMessage\SendResult.cs" />
     <Compile Include="AdvancedAPIs\Groups\CreateGroupResult.cs" />
+    <Compile Include="AdvancedAPIs\Groups\GetIdResult.cs" />
     <Compile Include="AdvancedAPIs\Groups\Groups.cs" />
     <Compile Include="AdvancedAPIs\Groups\GroupsJson.cs" />
+    <Compile Include="AdvancedAPIs\Media\Media.cs" />
+    <Compile Include="AdvancedAPIs\Media\UploadResultJson.cs" />
+    <Compile Include="AdvancedAPIs\OAuth\OAuthAccessTokenResult.cs" />
+    <Compile Include="AdvancedAPIs\OAuth\OAuth.cs" />
+    <Compile Include="AdvancedAPIs\OAuth\OAuthUserInfo.cs" />
     <Compile Include="AdvancedAPIs\QrCode\CreateQrCodeResult.cs" />
     <Compile Include="AdvancedAPIs\QrCode\QrCode.cs" />
+    <Compile Include="AdvancedAPIs\TemplateMessage\Template.cs" />
+    <Compile Include="AdvancedAPIs\TemplateMessage\TempleteModel.cs" />
     <Compile Include="AdvancedAPIs\User\OpenIdResultJson.cs" />
     <Compile Include="AdvancedAPIs\User\User.cs" />
     <Compile Include="AdvancedAPIs\User\UserInfoJson.cs" />
     <Compile Include="Agents\MessageAgent.cs" />
     <Compile Include="CheckSignature.cs" />
+    <Compile Include="CommonAPIs\AccessTokenContainer.cs" />
     <Compile Include="CommonAPIs\CommonApi.cs" />
     <Compile Include="CommonAPIs\CommonJsonSend.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Context\MessageContainer.cs" />
+    <Compile Include="Context\MessageQueue.cs" />
     <Compile Include="Context\WeixinContextRemovedEventArgs.cs" />
-    <Compile Include="Entities\GoogleMap\Markers.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Entities\BaiduMap\BaiduMapMarkers.cs" />
+    <Compile Include="Entities\Extensions.cs" />
+    <Compile Include="Entities\GoogleMap\GoogleMapMarkers.cs" />
     <Compile Include="Entities\JsonResult\AccessTokenResult.cs" />
     <Compile Include="Entities\JsonResult\GetMenuResultFull.cs" />
     <Compile Include="Entities\JsonResult\GetMenuResult.cs" />
@@ -96,6 +114,7 @@
     <Compile Include="Entities\Request\RequestMessageEvent_Location.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Entities\Request\RequestMessageEvent_MassSendJobFinish.cs" />
     <Compile Include="Entities\Request\RequestMessageImage.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -114,10 +133,11 @@
     <Compile Include="Entities\Request\RequestMessageLink.cs" />
     <Compile Include="Entities\Request\RequestMessageEvent_Scan.cs" />
     <Compile Include="Entities\Request\RequestMessageVideo.cs" />
-    <Compile Include="Entities\Request\Video.cs" />
+    <Compile Include="Entities\Request\RequestMessageEvent_View.cs" />
     <Compile Include="Entities\Response\Article.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Entities\Response\Image.cs" />
     <Compile Include="Entities\Response\Music.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -133,9 +153,16 @@
     <Compile Include="Entities\Response\ResponseMessageText.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Entities\Response\ResponseMessageImage.cs" />
+    <Compile Include="Entities\Response\ResponseMessagetTransfer_Customer_Service.cs" />
+    <Compile Include="Entities\Response\ResponseMessageVoice.cs" />
+    <Compile Include="Entities\Response\Video.cs" />
+    <Compile Include="Entities\Response\Voice.cs" />
+    <Compile Include="Entities\Response\ResponseMessageVideo.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Exceptions\ErrorJsonResultException.cs" />
     <Compile Include="Exceptions\WeixinMenuException.cs" />
+    <Compile Include="Helpers\BaiduMapHelper.cs" />
     <Compile Include="Helpers\DateTimeHelper.cs" />
     <Compile Include="Helpers\EntityHelper.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
@@ -143,9 +170,12 @@
     <Compile Include="Helpers\GoogleMapHelper.cs" />
     <Compile Include="Helpers\GpsHelper.cs" />
     <Compile Include="Helpers\MsgTypeHelper.cs" />
+    <Compile Include="Helpers\SerializerHelper.cs" />
     <Compile Include="HttpUtility\Get.cs" />
     <Compile Include="HttpUtility\Post.cs" />
     <Compile Include="HttpUtility\RequestUtility.cs" />
+    <Compile Include="Merchant\Entities\ProductBase.cs" />
+    <Compile Include="Merchant\Good.cs" />
     <Compile Include="MessageHandlers\MessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestMessageFactory.cs" />

@@ -9,6 +9,9 @@ namespace Senparc.Weixin.MP.AdvancedAPIs
 {
     //API：http://mp.weixin.qq.com/wiki/index.php?title=%E7%94%9F%E6%88%90%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84%E4%BA%8C%E7%BB%B4%E7%A0%81
 
+    /// <summary>
+    /// 二维码接口
+    /// </summary>
     public static class QrCode
     {
         /// <summary>
@@ -21,7 +24,7 @@ namespace Senparc.Weixin.MP.AdvancedAPIs
         {
             var urlFormat = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={0}";
             object data = null;
-            if (expireSeconds <= 0)
+            if (expireSeconds > 0)
             {
                 data = new
                 {

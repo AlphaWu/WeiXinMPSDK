@@ -52,7 +52,17 @@ namespace Senparc.Weixin.MP
         /// <summary>
         /// 二维码扫描
         /// </summary>
-        scan
+        scan,
+
+        /// <summary>
+        /// URL跳转
+        /// </summary>
+        VIEW,
+
+        /// <summary>
+        /// 事件推送群发结果
+        /// </summary>
+        MASSSENDJOBFINISH
     }
 
 
@@ -63,7 +73,12 @@ namespace Senparc.Weixin.MP
     {
         Text,
         News,
-        Music
+        Music,
+        Image,
+        Voice,
+        Video,
+        Transfer_Customer_Service
+		//transfer_customer_service
     }
 
     /// <summary>
@@ -87,21 +102,25 @@ namespace Senparc.Weixin.MP
     public enum UploadMediaFileType
     {
         /// <summary>
-        /// 图片
+        /// 图片: 128K，支持JPG格式
         /// </summary>
         image,
         /// <summary>
-        /// 语音
+        /// 语音：256K，播放长度不超过60s，支持AMR\MP3格式
         /// </summary>
         voice,
         /// <summary>
-        /// 视频
+        /// 视频：1MB，支持MP4格式
         /// </summary>
         video,
         /// <summary>
-        /// thumb
+        /// thumb：64KB，支持JPG格式
         /// </summary>
-        thumb
+        thumb,
+        /// <summary>
+        /// 图文消息
+        /// </summary>
+        news
     }
 
     /// <summary>
@@ -171,6 +190,49 @@ namespace Senparc.Weixin.MP
         不存在的菜单数据 = 46003,
         解析JSON_XML内容错误 = 47001,
         api功能未授权 = 48001,
-        用户未授权该api = 50001
+        用户未授权该api = 50001,
+
+        //新加入的一些类型，以下文字根据P2P项目格式组织，非官方文字
+        发送消息失败_48小时内用户未互动 = 10706,
+        发送消息失败_该用户已被加入黑名单_无法向此发送消息 = 62751,
+        发送消息失败_对方关闭了接收消息 = 10703,
+        对方不是粉丝 = 10700
+    }
+
+    ///// <summary>
+    ///// 群发消息返回状态
+    ///// </summary>
+    //public enum GroupMessageStatus
+    //{
+    //    //高级群发消息的状态
+    //    涉嫌广告 = 10001,
+    //    涉嫌政治 = 20001,
+    //    涉嫌社会 = 20004,
+    //    涉嫌色情 = 20002,
+    //    涉嫌违法犯罪 = 20006,
+    //    涉嫌欺诈 = 20008,
+    //    涉嫌版权 = 20013,
+    //    涉嫌互推 = 22000,
+    //    涉嫌其他 = 21000
+    //}
+
+
+    /// <summary>
+    /// 语言
+    /// </summary>
+    public enum Language
+    {
+        /// <summary>
+        /// 中文简体
+        /// </summary>
+        zh_CN,
+        /// <summary>
+        /// 中文繁体
+        /// </summary>
+        zh_TW,
+        /// <summary>
+        /// 英文
+        /// </summary>
+        en
     }
 }

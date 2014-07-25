@@ -6,7 +6,7 @@ using System.Text;
 namespace Senparc.Weixin.MP.Entities
 {
     /// <summary>
-    /// 事件之取消订阅
+    /// 事件之二维码扫描（关注微信）
     /// </summary>
     public class RequestMessageEvent_Scan : RequestMessageEventBase, IRequestMessageEventBase
     {

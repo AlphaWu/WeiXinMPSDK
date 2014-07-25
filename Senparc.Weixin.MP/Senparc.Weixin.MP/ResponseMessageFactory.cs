@@ -38,14 +38,26 @@ namespace Senparc.Weixin.MP
                 switch (msgType)
                 {
                     case ResponseMsgType.Text:
-                        responseMessage=new ResponseMessageText();
+                        responseMessage = new ResponseMessageText();
                         break;
-                    case ResponseMsgType.News:
-                        responseMessage=new ResponseMessageNews();
+                    case ResponseMsgType.Image:
+                        responseMessage = new ResponseMessageImage();
+                        break;
+                    case ResponseMsgType.Voice:
+                        responseMessage = new ResponseMessageVoice();
+                        break;
+                    case ResponseMsgType.Video:
+                        responseMessage = new ResponseMessageVideo();
                         break;
                     case ResponseMsgType.Music:
-                        responseMessage=new ResponseMessageMusic();
+                        responseMessage = new ResponseMessageMusic();
                         break;
+                    case ResponseMsgType.News:
+                        responseMessage = new ResponseMessageNews();
+                        break;
+					case ResponseMsgType.Transfer_Customer_Service:
+						responseMessage = new ResponseMessageTransfer_Customer_Service();
+						break;
                     default:
                         throw new UnknownRequestMsgTypeException(string.Format("MsgType：{0} 在ResponseMessageFactory中没有对应的处理程序！", msgType), new ArgumentOutOfRangeException());
                 }

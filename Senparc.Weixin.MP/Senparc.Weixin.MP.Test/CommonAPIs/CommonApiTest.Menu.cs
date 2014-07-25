@@ -16,17 +16,17 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         {
             return;//已经通过测试
 
-            LoadToken();
+            var accessToken = AccessTokenContainer.GetToken(_appId);
 
             ButtonGroup bg = new ButtonGroup();
 
             //单击
             bg.button.Add(new SingleClickButton()
-                              {
-                                  name = "单击测试",
-                                  key = "OneClick",
-                                  type = ButtonType.click.ToString(),//默认已经设为此类型，这里只作为演示
-                              });
+                                {
+                                    name = "单击测试",
+                                    key = "OneClick",
+                                    type = ButtonType.click.ToString(),//默认已经设为此类型，这里只作为演示
+                                });
 
             //二级菜单
             var subButton = new SubButton()
@@ -55,15 +55,8 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
                                         });
             bg.button.Add(subButton);
 
-            //url跳转
-            var viewButton = new SingleViewButton()
-                                {
-                                    name = "Url跳转",
-                                    url = "http://weixin.senparc.com"
-                                };
-            bg.button.Add(viewButton);
 
-            var result = CommonApi.CreateMenu(tokenResult.access_token, bg);
+            var result = CommonApi.CreateMenu(accessToken, bg);
 
             Assert.IsNotNull(result);
             Assert.AreEqual("ok", result.errmsg);
@@ -74,9 +67,9 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         public void GetMenuTest()
         {
             return;//已经通过测试
-            LoadToken();
+            var accessToken = AccessTokenContainer.GetToken(_appId);
 
-            var result = CommonApi.GetMenu(tokenResult.access_token);
+            var result = CommonApi.GetMenu(accessToken);
 
             //Assert.IsNull(result);//如果菜单不存在返回Null
             Assert.IsNotNull(result);
@@ -88,9 +81,9 @@ namespace Senparc.Weixin.MP.Test.CommonAPIs
         {
             return;//已经通过测试，删除之后，GetMenu将返回null
 
-            LoadToken();
+            var accessToken = AccessTokenContainer.GetToken(_appId);
 
-            var result = CommonApi.DeleteMenu(tokenResult.access_token);
+            var result = CommonApi.DeleteMenu(accessToken);
             Assert.IsNotNull(result);
             Assert.AreEqual("ok", result.errmsg);
         }

@@ -13,8 +13,43 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
     /// <summary>
     /// 自定义MessageHandler
     /// </summary>
-    public partial class CustomMessageHandler 
+    public partial class CustomMessageHandler
     {
+        private string GetWelcomeInfo()
+        {
+            //获取Senparc.Weixin.MP.dll版本信息
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(HttpContext.Current.Server.MapPath("~/bin/Senparc.Weixin.MP.dll"));
+            var version = string.Format("{0}.{1}", fileVersionInfo.FileMajorPart, fileVersionInfo.FileMinorPart);
+            return string.Format(
+@"欢迎关注【Senparc.Weixin.MP 微信公众平台SDK】，当前运行版本：v{0}。
+您可以发送【文字】【位置】【图片】【语音】等不同类型的信息，查看不同格式的回复。
+
+您也可以直接点击菜单查看各种类型的回复。
+
+SDK官方地址：http://weixin.senparc.com
+源代码及Demo下载地址：https://github.com/JeffreySu/WeiXinMPSDK
+Nuget地址：https://www.nuget.org/packages/Senparc.Weixin.MP",
+                version);
+        }
+
+        public override IResponseMessageBase OnTextOrEventRequest(RequestMessageText requestMessage)
+        {
+            // 预处理文字或事件类型请求。
+            // 这个请求是一个比较特殊的请求，通常用于统一处理来自文字或菜单按钮的同一个执行逻辑，
+            // 会在执行OnTextRequest或OnEventRequest之前触发，具有以下一些特征：
+            // 1、如果返回null，则继续执行OnTextRequest或OnEventRequest
+            // 2、如果返回不为null，则终止执行OnTextRequest或OnEventRequest，返回最终ResponseMessage
+            // 3、如果是事件，则会将RequestMessageEvent自动转为RequestMessageText类型，其中RequestMessageText.Content就是RequestMessageEvent.EventKey
+
+            if (requestMessage.Content == "OneClick")
+            {
+                var strongResponseMessage = CreateResponseMessage<ResponseMessageText>();
+                strongResponseMessage.Content = "您点击了底部按钮。\r\n为了测试微信软件换行bug的应对措施，这里做了一个——\r\n换行";
+                return strongResponseMessage;
+            }
+            return null;//返回null，则继续执行OnTextRequest或OnEventRequest
+        }
+
         public override IResponseMessageBase OnEvent_ClickRequest(RequestMessageEvent_Click requestMessage)
         {
             IResponseMessageBase reponseMessage = null;
@@ -23,9 +58,10 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
             {
                 case "OneClick":
                     {
+                        //这个过程实际已经在OnTextOrEventRequest中完成，这里不会执行到。
                         var strongResponseMessage = CreateResponseMessage<ResponseMessageText>();
                         reponseMessage = strongResponseMessage;
-                        strongResponseMessage.Content = "您点击了底部按钮。";
+                        strongResponseMessage.Content = "您点击了底部按钮。\r\n为了测试微信软件换行bug的应对措施，这里做了一个——\r\n换行";
                     }
                     break;
                 case "SubClickRoot_Text":
@@ -55,11 +91,20 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
                         strongResponseMessage.Music.MusicUrl = "http://weixin.senparc.com/Content/music1.mp3";
                     }
                     break;
+                case "SubClickRoot_Image":
+                    {
+                        var strongResponseMessage = CreateResponseMessage<ResponseMessageImage>();
+                        reponseMessage = strongResponseMessage;
+                        strongResponseMessage.Image.MediaId = "Mj0WUTZeeG9yuBKhGP7iR5n1xUJO9IpTjGNC4buMuswfEOmk6QSIRb_i98do5nwo";
+                    }
+                    break;
                 case "SubClickRoot_Agent"://代理消息
                     {
                         //获取返回的XML
                         DateTime dt1 = DateTime.Now;
-                        reponseMessage = MessageAgent.RequestResponseMessage(agentUrl, agentToken, RequestDocument.ToString());
+                        reponseMessage = MessageAgent.RequestResponseMessage(this, agentUrl, agentToken, RequestDocument.ToString());
+                        //上面的方法也可以使用扩展方法：this.RequestResponseMessage(this,agentUrl, agentToken, RequestDocument.ToString());
+
                         DateTime dt2 = DateTime.Now;
 
                         if (reponseMessage is ResponseMessageNews)
@@ -72,7 +117,28 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
                     break;
                 case "Member"://托管代理会员信息
                     {
-                        reponseMessage = MessageAgent.RequestResponseMessage(agentUrl, agentToken, RequestDocument.ToString());
+                        //原始方法为：MessageAgent.RequestXml(this,agentUrl, agentToken, RequestDocument.ToString());//获取返回的XML
+                        reponseMessage = this.RequestResponseMessage(agentUrl, agentToken, RequestDocument.ToString());
+                    }
+                    break;
+                case "OAuth"://OAuth授权测试
+                    {
+                        var strongResponseMessage = CreateResponseMessage<ResponseMessageNews>();
+                        strongResponseMessage.Articles.Add(new Article()
+                        {
+                            Title = "OAuth2.0测试",
+                            Description = "点击【查看全文】进入授权页面。\r\n注意：此页面仅供测试（是专门的一个临时测试账号的授权，并非Senparc.Weixin.MP SDK官方账号，所以如果授权后出现错误页面数正常情况），测试号随时可能过期。请将此DEMO部署到您自己的服务器上，并使用自己的appid和secret。",
+                            Url = "http://weixin.senparc.com/oauth2",
+                            PicUrl = "http://weixin.senparc.com/Images/qrcode.jpg"
+                        });
+                        reponseMessage = strongResponseMessage;
+                    }
+                    break;
+                case "Description":
+                    {
+                        var strongResponseMessage = CreateResponseMessage<ResponseMessageText>();
+                        strongResponseMessage.Content = GetWelcomeInfo();
+                        reponseMessage = strongResponseMessage;
                     }
                     break;
             }
@@ -89,7 +155,24 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
 
         public override IResponseMessageBase OnEvent_LocationRequest(RequestMessageEvent_Location requestMessage)
         {
-            throw new Exception("暂不可用");
+            //这里是微信客户端（通过微信服务器）自动发送过来的位置信息
+            var responseMessage = CreateResponseMessage<ResponseMessageText>();
+            responseMessage.Content = "这里写什么都无所谓，比如：上帝爱你！";
+            return responseMessage;//这里也可以返回null（需要注意写日志时候null的问题）
+        }
+
+        public override IResponseMessageBase OnEvent_ScanRequest(RequestMessageEvent_Scan requestMessage)
+        {
+            //通过扫描关注
+            return base.OnEvent_ScanRequest(requestMessage);
+        }
+
+        public override IResponseMessageBase OnEvent_ViewRequest(RequestMessageEvent_View requestMessage)
+        {
+            //说明：这条消息只作为接收，下面的responseMessage到达不了客户端，类似OnEvent_UnsubscribeRequest
+            var responseMessage = CreateResponseMessage<ResponseMessageText>();
+            responseMessage.Content = "您点击了view按钮，将打开网页：" + requestMessage.EventKey;
+            return responseMessage;
         }
 
         /// <summary>
@@ -99,17 +182,7 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
         public override IResponseMessageBase OnEvent_SubscribeRequest(RequestMessageEvent_Subscribe requestMessage)
         {
             var responseMessage = ResponseMessageBase.CreateFromRequestMessage<ResponseMessageText>(requestMessage);
-
-            //获取Senparc.Weixin.MP.dll版本信息
-            var fileVersionInfo = FileVersionInfo.GetVersionInfo(HttpContext.Current.Server.MapPath("~/bin/Senparc.Weixin.MP.dll"));
-            var version = string.Format("{0}.{1}", fileVersionInfo.FileMajorPart, fileVersionInfo.FileMinorPart);
-            responseMessage.Content = string.Format(
-@"欢迎关注【Senparc.Weixin.MP 微信公众平台SDK】，当前运行版本：v{0}。
-您可以发送【文字】【位置】【图片】【语音】等不同类型的信息，查看不同格式的回复。
-
-SDK官方地址：http://weixin.senparc.com
-源代码及Demo下载地址：https://github.com/JeffreySu/WeiXinMPSDK",
-                version);
+            responseMessage.Content = GetWelcomeInfo();
             return responseMessage;
         }
 

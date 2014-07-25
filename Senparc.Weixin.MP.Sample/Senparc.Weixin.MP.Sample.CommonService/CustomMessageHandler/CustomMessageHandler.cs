@@ -27,12 +27,12 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
 #if DEBUG
         string agentUrl = "http://localhost:12222/App/Weixin/4";
         string agentToken = "27C455F496044A87";
-        string souideaKey = "CNadjJuWzyX5bz5Gn+/XoyqiqMa5DjXQ";
+        string wiweihiKey = "CNadjJuWzyX5bz5Gn+/XoyqiqMa5DjXQ";
 #else
-        //下面的Url和Token可以用其他平台的消息，或者到www.souidea.com注册微信用用，并申请“微信营销工具”得到
-        private string agentUrl = WebConfigurationManager.AppSettings["WeixinAgentUrl"];//这里使用了www.souidea.com微信自动托管平台
+        //下面的Url和Token可以用其他平台的消息，或者到www.weiweihi.com注册微信用户，将自动在“微信营销工具”下得到
+        private string agentUrl = WebConfigurationManager.AppSettings["WeixinAgentUrl"];//这里使用了www.weiweihi.com微信自动托管平台
         private string agentToken = WebConfigurationManager.AppSettings["WeixinAgentToken"];//Token
-        private string souideaKey = WebConfigurationManager.AppSettings["WeixinAgentSouideaKey"];//SouideaKey专门用于对接www.souidea.com平台，获取方式见：http://www.souidea.com/ApiDocuments/Item/25#51
+        private string wiweihiKey = WebConfigurationManager.AppSettings["WeixinAgentWeiweihiKey"];//WeiweihiKey专门用于对接www.Weiweihi.com平台，获取方式见：http://www.weiweihi.com/ApiDocuments/Item/25#51
 #endif
 
         public CustomMessageHandler(Stream inputStream, int maxRecordCount = 0)
@@ -82,6 +82,7 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
             //注意：下面泛型ResponseMessageText即返回给客户端的类型，可以根据自己的需要填写ResponseMessageNews等不同类型。
             var responseMessage = base.CreateResponseMessage<ResponseMessageText>();
 
+
             if (requestMessage.Content == "约束")
             {
                 responseMessage.Content = "<a href=\"http://weixin.senparc.com/FilterTest/\">点击这里</a>进行客户端约束测试（地址：http://weixin.senparc.com/FilterTest/）。";
@@ -93,12 +94,13 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
 
                 DateTime dt1 = DateTime.Now;//计时开始
 
-                var responseXml = MessageAgent.RequestXml(agentUrl, agentToken, RequestDocument.ToString());//获取返回的XML
+                var responseXml = MessageAgent.RequestXml(this, agentUrl, agentToken, RequestDocument.ToString());//获取返回的XML
+                //上面的方法也可以使用扩展方法：this.RequestResponseMessage(this,agentUrl, agentToken, RequestDocument.ToString());
 
-                /* 如果有SouideaKey，可以直接使用下面的这个MessageAgent.RequestSouideaXml()方法。
-                 * SouideaKey专门用于对接www.souidea.com平台，获取方式见：http://www.souidea.com/ApiDocuments/Item/25#51
+                /* 如果有WeiweihiKey，可以直接使用下面的这个MessageAgent.RequestWeiweihiXml()方法。
+                 * WeiweihiKey专门用于对接www.weiweihi.com平台，获取方式见：http://www.weiweihi.com/ApiDocuments/Item/25#51
                  */
-                //var responseXml = MessageAgent.RequestSouideaXml(souideaKey, RequestDocument.ToString());//获取Souidea返回的XML
+                //var responseXml = MessageAgent.RequestWeiweihiXml(weiweihiKey, RequestDocument.ToString());//获取Weiweihi返回的XML
 
                 DateTime dt2 = DateTime.Now;//计时结束
 
@@ -111,6 +113,23 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
                 responseMessage = responseXml.CreateResponseMessage() as ResponseMessageText;
 
                 responseMessage.Content += string.Format("\r\n\r\n代理过程总耗时：{0}毫秒", (dt2 - dt1).Milliseconds);
+            }
+            else if (requestMessage.Content == "测试" || requestMessage.Content == "退出")
+            {
+                /* 
+                * 这是一个特殊的过程，此请求通常来自于微微嗨（http://www.weiweihi.com）的“盛派网络小助手”应用请求（http://www.weiweihi.com/User/App/Detail/1），
+                * 用于演示微微嗨应用商店的处理过程，由于微微嗨的应用内部可以单独设置对话过期时间，所以这里通常不需要考虑对话状态，只要做最简单的响应。
+                */
+                if (requestMessage.Content == "测试")
+                {
+                    //进入APP测试
+                    responseMessage.Content = "您已经进入【盛派网络小助手】的测试程序，请发送任意信息进行测试。发送文字【退出】退出测试对话。10分钟内无任何交互将自动退出应用对话状态。";
+                }
+                else
+                {
+                    //退出APP测试
+                    responseMessage.Content = "您已经退出【盛派网络小助手】的测试程序。";
+                }
             }
             else
             {
@@ -201,15 +220,6 @@ namespace Senparc.Weixin.MP.Sample.CommonService.CustomMessageHandler
         /// <returns></returns>
         public override IResponseMessageBase OnVideoRequest(RequestMessageVideo requestMessage)
         {
-            /* 
-             * 官方文档和实际发送的不一致，
-             * 实际发送没有RequestMessageVideo.Video这个对象，直接是MediaId和ThumbMediaId，
-             * 但是文档中这两项是包含在Video节点下面的，
-             * 这里为了防止官方调整，专门添加了Video这个对象，以防不测。
-             * 
-             * RequestMessageVideo中已经做了访问器映射，
-             * 实际使用的时候可以忽略RequestMessageVideo.Video.MediaId，直接访问requestMessage.MediaId。
-             */
             var responseMessage = CreateResponseMessage<ResponseMessageText>();
             responseMessage.Content = "您发送了一条视频信息，ID：" + requestMessage.MediaId;
             return responseMessage;
@@ -235,13 +245,12 @@ Url:{2}", requestMessage.Title, requestMessage.Description, requestMessage.Url);
         /// </summary>
         /// <param name="requestMessage"></param>
         /// <returns></returns>
-        public override IResponseMessageBase OnEventRequest(RequestMessageEventBase requestMessage)
+        public override IResponseMessageBase OnEventRequest(IRequestMessageEventBase requestMessage)
         {
             var eventResponseMessage = base.OnEventRequest(requestMessage);//对于Event下属分类的重写方法，见：CustomerMessageHandler_Events.cs
             //TODO: 对Event信息进行统一操作
             return eventResponseMessage;
         }
-
 
         public override IResponseMessageBase DefaultResponseMessage(IRequestMessageBase requestMessage)
         {

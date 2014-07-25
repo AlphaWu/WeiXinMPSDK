@@ -60,11 +60,21 @@ namespace Senparc.Weixin.MP.Test
   <FromUserName><![CDATA[olPjZjsXuQPJoV0HlruZkNzKc91E]]></FromUserName>
   <CreateTime>1361430302</CreateTime>
   <MsgType><![CDATA[video]]></MsgType>
-  <Video>
-    <MediaId><![CDATA[mediaId]]></MediaId>
-    <ThumbMediaId><![CDATA[thumbMediaId]]></ThumbMediaId>
-  </Video> 
+  <MediaId><![CDATA[mediaId]]></MediaId>
+  <ThumbMediaId><![CDATA[thumbMediaId]]></ThumbMediaId>
 </xml>";
+
+//        @"<?xml version=""1.0"" encoding=""utf-8""?>
+//<xml>
+//  <ToUserName><![CDATA[gh_a96a4a619366]]></ToUserName>
+//  <FromUserName><![CDATA[olPjZjsXuQPJoV0HlruZkNzKc91E]]></FromUserName>
+//  <CreateTime>1361430302</CreateTime>
+//  <MsgType><![CDATA[video]]></MsgType>
+//  <Video>
+//    <MediaId><![CDATA[mediaId]]></MediaId>
+//    <ThumbMediaId><![CDATA[thumbMediaId]]></ThumbMediaId>
+//  </Video> 
+//</xml>";
 
         private string xmlLink = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <xml>
@@ -140,6 +150,17 @@ namespace Senparc.Weixin.MP.Test
   <Event><![CDATA[scan]]></Event>
   <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
   <Ticket><![CDATA[TICKET]]></Ticket>
+</xml>
+";
+
+        private string xmlEvent_View = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<xml>
+  <ToUserName><![CDATA[gh_a96a4a619366]]></ToUserName>
+  <FromUserName><![CDATA[olPjZjsXuQPJoV0HlruZkNzKc91E]]></FromUserName>
+  <CreateTime>1394805110</CreateTime>
+  <MsgType><![CDATA[event]]></MsgType>
+  <Event><![CDATA[VIEW]]></Event>
+  <EventKey><![CDATA[http://weixin.senparc.com]]></EventKey>
 </xml>
 ";
 
@@ -268,6 +289,17 @@ namespace Senparc.Weixin.MP.Test
 
                 Assert.AreEqual("SCENE_VALUE", result.EventKey);
                 Assert.AreEqual("TICKET", result.Ticket);
+            }
+
+            {
+                //Event-VIEW
+                var doc = XDocument.Parse(xmlEvent_View);
+                var result = RequestMessageFactory.GetRequestEntity(doc) as RequestMessageEvent_View;
+                Assert.IsNotNull(result);
+                Assert.AreEqual("gh_a96a4a619366", result.ToUserName);
+                Assert.AreEqual(Event.scan, result.Event);
+                Assert.AreEqual(new DateTime(2014, 3, 14), result.CreateTime.Date);
+                Assert.AreEqual("http://weixin.senparc.com", result.EventKey);
             }
         }
     }
